@@ -20,9 +20,9 @@ search = st.text_input('What would you like to search?')
 
 @st.cache
 def download(streams):
-  print("Downloading...")
+  # print("Downloading...")
   streams[0].download(filename="video.mp4")
-  print("Download completed.")
+  # print("Download completed.")
 
 
 def process():
@@ -63,7 +63,7 @@ def process():
 
   # Print some statistics
   l = len(video_frames)
-  print(f"Frames extracted: {l}")
+  # print(f"Frames extracted: {l}")
   bar.progress(40)
 
   bar.progress(50)
@@ -80,7 +80,7 @@ def process():
 
   # Process each batch
   for i in range(batches):
-    print(f"Processing batch {i+1}/{batches}")
+    # print(f"Processing batch {i+1}/{batches}")
 
     # Get the relevant frames
     batch_frames = video_frames[i*batch_size : (i+1)*batch_size]
@@ -97,7 +97,7 @@ def process():
     video_features = torch.cat((video_features, batch_features))
 
   # Print some stats
-  print(f"Features: {video_features.shape}")
+  # print(f"Features: {video_features.shape}")
 
   def search_video(search_query, display_heatmap=False, display_results_count=3):
 
@@ -112,7 +112,7 @@ def process():
 
     # Display the heatmap
     if display_heatmap:
-      print("Search query heatmap over the frames of the video:")
+      # print("Search query heatmap over the frames of the video:")
       fig = px.imshow(similarities.T.cpu().numpy(), height=50, aspect='auto', color_continuous_scale='viridis')
       fig.update_layout(coloraxis_showscale=False)
       fig.update_xaxes(showticklabels=False)
