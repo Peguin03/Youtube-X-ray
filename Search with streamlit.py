@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import plotly.express as px
 import datetime
-import time
+
 
 '# YouTube X-ray'
 st.subheader('Watch what you **want**.')
@@ -24,29 +24,13 @@ def download(streams):
   streams[0].download(filename="video.mp4")
   # print("Download completed.")
 
-
-def process():
-
-  text = st.empty()
-  st.text('Searching...')
-  bar = st.progress(0)
-
-  streams = YouTube(video_url).streams.filter(adaptive=True, subtype="mp4", resolution="360p", only_video=True)
-
-  # Check if there is a valid stream
-  if len(streams) == 0:
-    st.write("No suitable video found for this YouTube video!")
-    raise "No suitable video found for this YouTube video!"
-
-  # Download the video as video.mp4
-  download(streams)
-  bar.progress(20)
-
+@st.cache
+def frame_extraction(N):
   capture = cv2.VideoCapture('video.mp4')
   fps = capture.get(cv2.CAP_PROP_FPS)
   current_frame = 0
 
-  bar.progress(30)
+  # bar.progress(30)
   while capture.isOpened():
     # Read the current frame
     ret, frame = capture.read()
@@ -61,13 +45,10 @@ def process():
     current_frame += N
     capture.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
 
-  # Print some statistics
-  l = len(video_frames)
-  # print(f"Frames extracted: {l}")
-  bar.progress(40)
+  return video_frames, fps
 
-  bar.progress(50)
-
+@st.cache
+def predict(video_frames):
   device = "cuda" if torch.cuda.is_available() else "cpu"
   model, preprocess = clip.load("ViT-B/32", device=device)
 
@@ -76,7 +57,7 @@ def process():
 
   video_features = torch.empty([0, 512], dtype=torch.float16).to(device)
 
-  bar.progress(60)
+  
 
   # Process each batch
   for i in range(batches):
@@ -98,7 +79,36 @@ def process():
 
   # Print some stats
   # print(f"Features: {video_features.shape}")
+  return video_features, model, device
 
+
+def process():
+
+  text = st.empty()
+  st.text('Searching...')
+  bar = st.progress(0)
+
+  streams = YouTube(video_url).streams.filter(adaptive=True, subtype="mp4", resolution="360p", only_video=True)
+
+  # Check if there is a valid stream
+  if len(streams) == 0:
+    st.write("No suitable video found for this YouTube video!")
+    raise "No suitable video found for this YouTube video!"
+
+  # Download the video as video.mp4
+  download(streams)
+  bar.progress(20)
+
+  video_frames, fps = frame_extraction(N)
+  # Print some statistics
+  # l = len(video_frames)
+  # print(f"Frames extracted: {l}")
+
+  bar.progress(40)
+
+  video_features, model, device = predict(video_frames)
+
+  bar.progress(50)
   def search_video(search_query, display_heatmap=False, display_results_count=3):
 
     # Encode and normalize the search query using CLIP
