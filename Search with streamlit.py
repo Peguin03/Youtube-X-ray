@@ -9,30 +9,12 @@ import torch
 import plotly.express as px
 import datetime
 import time
-# import base64
 
-# main_bg = "net.webp"
-# main_bg_ext = "webp"
-
-# st.markdown(
-#     f"markdown""
-#     <style>
-#     .reportview-container {{
-#         background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()})
-#     }}
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-# st.title('Youtube X-ray')
 '# YouTube X-ray'
-# '# Watch what you want.'
 st.subheader('Watch what you **want**.')
 
 video_frames = []
 N = 120
-# st.write('### Paste youtube URL here:')
 video_url = st.text_input('Paste youtube URL here:')
 search = st.text_input('What would you like to search?')
 
@@ -48,8 +30,7 @@ def process():
   text = st.empty()
   st.text('Searching...')
   bar = st.progress(0)
-  # st.info('Searching..')
-  # st.text('Downloading Video...')
+
   streams = YouTube(video_url).streams.filter(adaptive=True, subtype="mp4", resolution="360p", only_video=True)
 
   # Check if there is a valid stream
@@ -59,14 +40,12 @@ def process():
 
   # Download the video as video.mp4
   download(streams)
-  # st.text('Video Downloaded...')
   bar.progress(20)
 
   capture = cv2.VideoCapture('video.mp4')
   fps = capture.get(cv2.CAP_PROP_FPS)
   current_frame = 0
 
-  # st.text('Extracting Frames...')
   bar.progress(30)
   while capture.isOpened():
     # Read the current frame
@@ -85,10 +64,8 @@ def process():
   # Print some statistics
   l = len(video_frames)
   print(f"Frames extracted: {l}")
-  # st.text(str(l)+' Frames extracted.')
   bar.progress(40)
 
-  # st.text('Loading Model...')
   bar.progress(50)
 
   device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -97,10 +74,8 @@ def process():
   batch_size = 256
   batches = math.ceil(len(video_frames) / batch_size)
 
-  # The encoded features will bs stored in video_features
   video_features = torch.empty([0, 512], dtype=torch.float16).to(device)
 
-  # st.text('Preprocessing Images...')
   bar.progress(60)
 
   # Process each batch
@@ -144,9 +119,7 @@ def process():
       fig.update_yaxes(showticklabels=False)
       fig.update_layout(margin=dict(l=0, r=0, b=0, t=0))
       fig.show()
-      # print()
 
-    # st.text('Success!')
     bar.progress(100)
     st.success("Here are the top 3 Results!")
     # Display the top 3 frames
@@ -158,7 +131,6 @@ def process():
 
       st.markdown(str(video_url)+'&t='+str(math.floor(seconds)) , unsafe_allow_html=True)
 
-  # st.text('Searching the Video...')
   bar.progress(80)
   search_video(search)
 
