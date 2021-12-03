@@ -147,16 +147,3 @@ def process():
 if st.button('Go!'):
   process()
 
-# streamlit
-# opencv-python
-# pillow
-# pytube
-# pytorch
-# torchvision 
-# ftfy 
-# regex
-# tqdm
-# git+https://github.com/openai/CLIP.git
-# numpy
-# plotly
-# datetime
