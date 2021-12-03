@@ -49,7 +49,7 @@ def frame_extraction(N):
 
 @st.cache
 def predict(video_frames):
-  device = "cuda" if torch.cuda.is_available() else "cpu"
+  device = "cpu"#"cuda" if torch.cuda.is_available() else "cpu"
   model, preprocess = clip.load("ViT-B/32", device=device)
 
   batch_size = 256
@@ -146,3 +146,17 @@ def process():
 
 if st.button('Go!'):
   process()
+
+# streamlit
+# opencv-python
+# pillow
+# pytube
+# pytorch
+# torchvision 
+# ftfy 
+# regex
+# tqdm
+# git+https://github.com/openai/CLIP.git
+# numpy
+# plotly
+# datetime
