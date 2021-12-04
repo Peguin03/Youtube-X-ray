@@ -17,6 +17,7 @@ video_frames = []
 N = 120
 video_url = st.text_input('Paste youtube URL here:')
 search = st.text_input('What would you like to search?')
+count = st.number_input('Number of Resuts:', min_value=1, max_value=10)
 
 @st.cache
 def download(streams):
@@ -24,7 +25,7 @@ def download(streams):
   streams[0].download(filename="video.mp4")
   # print("Download completed.")
 
-@st.cache
+# @st.cache
 def frame_extraction(N):
   capture = cv2.VideoCapture('video.mp4')
   fps = capture.get(cv2.CAP_PROP_FPS)
@@ -56,9 +57,6 @@ def predict(video_frames):
   batches = math.ceil(len(video_frames) / batch_size)
 
   video_features = torch.empty([0, 512], dtype=torch.float16).to(device)
-
-  
-
   # Process each batch
   for i in range(batches):
     # print(f"Processing batch {i+1}/{batches}")
@@ -109,7 +107,7 @@ def process():
   video_features, model, device = predict(video_frames)
 
   bar.progress(50)
-  def search_video(search_query, display_heatmap=False, display_results_count=3):
+  def search_video(search_query, display_heatmap=False, display_results_count=count):
 
     # Encode and normalize the search query using CLIP
     with torch.no_grad():
@@ -131,7 +129,8 @@ def process():
       fig.show()
 
     bar.progress(100)
-    st.success("Here are the top 3 Results!")
+    # st.balloons()
+    st.success("Here are the top " + str(display_results_count) + " Results!")
     # Display the top 3 frames
     for frame_id in best_photo_idx:
       # display(video_frames[frame_id])
