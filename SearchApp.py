@@ -48,7 +48,7 @@ def frame_extraction(N):
 
   return video_frames, fps
 
-@st.cache
+# @st.cache
 def predict(video_frames):
   device = "cpu"#"cuda" if torch.cuda.is_available() else "cpu"
   model, preprocess = clip.load("ViT-B/32", device=device)
