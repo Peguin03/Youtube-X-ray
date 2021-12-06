@@ -19,7 +19,7 @@ video_url = st.text_input('Paste youtube URL here:')
 search = st.text_input('What would you like to search?')
 count = st.number_input('Number of Resuts:', min_value=1, max_value=10)
 
-@st.cache
+#@st.cache
 def download(streams):
   # print("Downloading...")
   streams[0].download(filename="video.mp4")
